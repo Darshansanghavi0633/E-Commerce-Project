@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js"
-
+import uploadRoutes from "./routes/uploadRoutes.js";
 // utils
 import connectDB from "./config/db.js";
 
@@ -26,6 +26,10 @@ app.use(cookieParser());                                // Parse cookies from in
 app.use("/api/users", userRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/products",productRoutes);
+app.use("/api/uploads",uploadRoutes);
+
+const __dirname = path.resolve(); // Get the current directory path
+app.use("/uploads", express.static(path.join(__dirname, "/uploads"))); // Serve static filess from the uploads directory 
 
 app.listen(port, () => {        
     console.log(`Server is running on port ${port}`);   // Log the server's listening port

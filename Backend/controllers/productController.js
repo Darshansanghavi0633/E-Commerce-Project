@@ -100,3 +100,71 @@ export const fetchProductById = asyncHandler(async(req,res)=>{
         res.status(400).json({message: error.message}); // Responding with an error message if an exception occurs
     }
 })
+
+export const fetchAllProducts = asyncHandler(async(req,res)=>{
+    try {
+        const products = await Product.find({}).populate('category').limit(12).sort({createdAt:-1}); // Fetching all products from the database
+        res.json(products); // Responding with the list of all products
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({message: error.message}); // Responding with an error message if an exception occurs
+    }
+})
+
+export const addProductReview = asyncHandler(async(req,res)=>{
+    try {
+        
+        const {id} = req.params; // Extracting product ID from request parameters
+        
+        const {rating, comment} = req.body; // Extracting rating and comment from the request
+        // Finding the product by ID
+        const product = await Product.findById(id);
+        
+        if (product){
+            const alreadyReviewed = product.reviews.find((r) => r.user.toString() === req.user._id.toString()); // Checking if the user has already reviewed the product
+            if (alreadyReviewed) {
+                res.status(400).json({message: "Product already reviewed"}); // Responding with an error if the product is already reviewed by the user
+            } else {
+                const review = {
+                    user: req.user._id,
+                    name: req.user.username,
+                    rating: Number(rating),
+                    comment
+                };
+                // Creating a new review object
+                product.reviews.push(review); // Adding the review to the product's reviews array
+                product.numReviews = product.reviews.length; // Updating the number of reviews
+                
+                product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length; // Calculating the average rating
+                await product.save(); // Saving the updated product
+                res.status(201).json(product); // Responding with the updated product
+            }
+        }
+        else {
+            res.status(404).json({message: "Product not found"}); // Responding with an error if the product is not found
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({message: error.message}); // Responding with an error message if an exception occurs
+    }
+})
+
+export const fetchTopProducts = asyncHandler(async(req,res)=>{
+    try {
+        const products = await Product.find({}).sort({rating:-1}).limit(4); // Fetching top 4 products sorted by rating
+        res.json(products); // Responding with the list of top products
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({message: error.message}); // Responding with an error message if an exception occurs
+    }
+})
+
+export const fetchNewProducts = asyncHandler(async(req,res)=>{
+    try {
+        const products = await Product.find({}).sort({_id:-1}).limit(5); // Fetching the 5 most recently created products
+        res.json(products); // Responding with the list of new products
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({message: error.message}); // Responding with an error message if an exception occurs
+    }
+})
