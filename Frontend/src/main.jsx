@@ -18,6 +18,7 @@ import Profile from './pages/User/Profile.jsx';
 import AdminRoute from './pages/Admin/AdminRoute';
 import UserList from './pages/Admin/UserList.jsx';
 import CategoryList from './pages/Admin/CategoryList.jsx';
+import ProductList from './pages/Admin/productList.jsx';
 
 
 const router = createBrowserRouter(
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
       <Route path='/admin' element={<AdminRoute />}>                       //admin route
         <Route path='/admin/userlist' element={<UserList />} />         //child route of admin route
         <Route path='/admin/categorylist' element={<CategoryList/>} />
+        <Route path='/admin/productlist' element={<ProductList />} />   //child route of admin route
       </Route>
 
     </Route >

@@ -1,17 +1,15 @@
+import { PRODUCT_URL, UPLOAD_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
-import { PRODUCT_URL,UPLOAD_URL } from "../constants";
-
 
 export const productApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    
     getProducts: builder.query({
       query: ({ keyword }) => ({
         url: `${PRODUCT_URL}`,
         params: { keyword },
       }),
       keepUnusedDataFor: 5,
-      providesTags: ["Product"],
+      providesTags: ["Products"],
     }),
 
     getProductById: builder.query({
@@ -75,12 +73,12 @@ export const productApiSlice = apiSlice.injectEndpoints({
 
     getTopProducts: builder.query({
       query: () => `${PRODUCT_URL}/top`,
-      keepUnusedDataFor: 5,                 // Keep data for 5 seconds
+      keepUnusedDataFor: 5,
     }),
 
     getNewProducts: builder.query({
       query: () => `${PRODUCT_URL}/new`,
-      keepUnusedDataFor: 5,                 // Keep data for 5 seconds  
+      keepUnusedDataFor: 5,
     }),
 
     getFilteredProducts: builder.query({

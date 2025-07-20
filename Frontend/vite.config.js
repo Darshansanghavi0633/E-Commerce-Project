@@ -8,7 +8,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      '/api': "http://localhost:5000", // Adjust the port if your backend runs on a different port
+      '/api/': "http://localhost:5000",     // Adjust the port if your backend runs on a different port
+      '/uploads/': "http://localhost:5000", // Proxy for file uploads
     },
   }
 
