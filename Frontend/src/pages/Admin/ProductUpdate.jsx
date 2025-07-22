@@ -64,40 +64,57 @@ const ProductUpdate = () => {
     };
 
 
-      const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (e) => {
+      e.preventDefault();
 
-        try {
-            const formData = new FormData();
-            formData.append("image", image);
-            formData.append("name", name);
-            formData.append("description", description);
-            formData.append("price", price);
-            formData.append("category", category);
-            formData.append("quantity", quantity);
-            formData.append("brand", brand);
-            formData.append("countInStock", countInStock);
+      try {
+          const formData = new FormData();
+          formData.append("image", image);
+          formData.append("name", name);
+          formData.append("description", description);
+          formData.append("price", price);
+          formData.append("category", category);
+          formData.append("quantity", quantity);
+          formData.append("brand", brand);
+          formData.append("countInStock", countInStock);
 
-            console.log(formData);
-            const payload=formData;
-            console.log(params.id);
+          console.log(formData);
+          const payload=formData;
+          console.log(params.id);
 
-            const  data  = await updateProduct({productId: params.id,formData:payload});
+          const  data  = await updateProduct({productId: params.id,formData:payload});
 
-            console.log(data.error);
-            
+          console.log(data.error);
+          
 
-            if (data.error) {
-                toast.error(data.error);
-            } else {
-                toast.success(`Product is updated`);
-                navigate("/admin/allproductslist");
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error("Product Updation failed. Try Again.");
-        }
-      };
+          if (data.error) {
+              toast.error(data.error);
+          } else {
+              toast.success(`Product is updated`);
+              navigate("/admin/allproductslist");
+          }
+      } catch (error) {
+          console.error(error);
+          toast.error("Product Updation failed. Try Again.");
+      }
+    };
+
+    const handleDelete = async () => {
+      try {
+        let answer = window.confirm(
+          "Are you sure you want to delete this product?"
+        );
+        if (!answer) return;
+
+        const { data } = await deleteProduct(params.id);
+        toast.success(`"${data.name}" is deleted`);
+        navigate("/admin/allproductslist");
+      } catch (err) {
+        console.log(err);
+        toast.error("Delete failed. Try again.");
+      }
+    };
+
     return (
     <>
       <div className="container  xl:mx-[9rem] sm:mx-[0]">
@@ -203,6 +220,9 @@ const ProductUpdate = () => {
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
+                    <option value="" disabled>
+                            Choose Category
+                    </option>
                     {categories?.map((c) => (
                       <option key={c._id} value={c._id}>
                         {c.name}
@@ -220,7 +240,7 @@ const ProductUpdate = () => {
                   Update
                 </button>
                 <button
-                  // onClick={handleDelete}
+                  onClick={handleDelete}
                   className="py-4 px-10 mt-5 rounded-lg text-lg font-bold  bg-pink-600"
                 >
                   Delete
