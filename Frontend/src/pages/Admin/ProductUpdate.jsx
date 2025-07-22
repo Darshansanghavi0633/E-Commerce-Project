@@ -41,7 +41,7 @@ const ProductUpdate = () => {
         if (productData && productData._id) {
           setName(productData.name);
           setPrice(productData.price);  
-          setCategory(productData.categories?._id);
+          setCategory(productData.category);
           setDescription(productData.description);
           setBrand(productData.brand);
           setCountInStock(productData.countInStock);
@@ -49,7 +49,55 @@ const ProductUpdate = () => {
           setQuantity(productData.quantity);
         }
     }, [productData]);  
+
     //Handling functions
+    const uploadFileHandler = async (e) => {
+        const formData = new FormData();
+        formData.append('image', e.target.files[0]);
+        try {
+            const res = await uploadProductImage(formData).unwrap();
+            toast.success("Image uploaded successfully");
+            setImage(res.image);
+        } catch (error) {
+            toast.error("Image upload failed. Try again.");
+        }
+    };
+
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const formData = new FormData();
+            formData.append("image", image);
+            formData.append("name", name);
+            formData.append("description", description);
+            formData.append("price", price);
+            formData.append("category", category);
+            formData.append("quantity", quantity);
+            formData.append("brand", brand);
+            formData.append("countInStock", countInStock);
+
+            console.log(formData);
+            const payload=formData;
+            console.log(params.id);
+
+            const  data  = await updateProduct({productId: params.id,formData:payload});
+
+            console.log(data.error);
+            
+
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                toast.success(`Product is updated`);
+                navigate("/admin/allproductslist");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Product Updation failed. Try Again.");
+        }
+      };
     return (
     <>
       <div className="container  xl:mx-[9rem] sm:mx-[0]">
@@ -63,20 +111,20 @@ const ProductUpdate = () => {
                 <img
                   src={image}
                   alt="product"
-                  className="block mx-auto w-full h-[40%]"
+                  className="block mx-auto max-h-[200px]"
                 />
               </div>
             )}
 
             <div className="mb-3">
-              <label className="text-white  py-2 px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
-                {image ? image.name : "Upload image"}
+              <label className=" border py-2 px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
+              {typeof image === 'string' ? image.split('/').pop() : image?.name || "Upload image"}
                 <input
                   type="file"
                   name="image"
                   accept="image/*"
                   onChange={uploadFileHandler}
-                  className="text-white"
+                  className={!image ? "" : "hidden"}
                 />
               </label>
             </div>
@@ -87,7 +135,7 @@ const ProductUpdate = () => {
                   <label htmlFor="name">Name</label> <br />
                   <input
                     type="text"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white mr-[5rem]"
+                    className="p-4 mb-3 w-[30rem] border rounded-lg  mr-[5rem]"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
@@ -97,7 +145,7 @@ const ProductUpdate = () => {
                   <label htmlFor="name block">Price</label> <br />
                   <input
                     type="number"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white "
+                    className="p-4 mb-3 w-[30rem] border rounded-lg  "
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                   />
@@ -110,7 +158,7 @@ const ProductUpdate = () => {
                   <input
                     type="number"
                     min="1"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white mr-[5rem]"
+                    className="p-4 mb-3 w-[30rem] border rounded-lg  mr-[5rem]"
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                   />
@@ -119,7 +167,7 @@ const ProductUpdate = () => {
                   <label htmlFor="name block">Brand</label> <br />
                   <input
                     type="text"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white "
+                    className="p-4 mb-3 w-[30rem] border rounded-lg  "
                     value={brand}
                     onChange={(e) => setBrand(e.target.value)}
                   />
@@ -131,7 +179,7 @@ const ProductUpdate = () => {
               </label>
               <textarea
                 type="text"
-                className="p-2 mb-3 bg-[#101011]  border rounded-lg w-[95%] text-white"
+                className="p-2 mb-3  border rounded-lg w-[95%] "
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
@@ -141,9 +189,9 @@ const ProductUpdate = () => {
                   <label htmlFor="name block">Count In Stock</label> <br />
                   <input
                     type="text"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white "
-                    value={stock}
-                    onChange={(e) => setStock(e.target.value)}
+                    className="p-4 mb-3 w-[30rem] border rounded-lg  "
+                    value={countInStock}
+                    onChange={(e) => setCountInStock(e.target.value)}
                   />
                 </div>
 
@@ -151,7 +199,8 @@ const ProductUpdate = () => {
                   <label htmlFor="">Category</label> <br />
                   <select
                     placeholder="Choose Category"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white mr-[5rem]"
+                    className="p-4 mb-3 w-[30rem] border rounded-lg  mr-[5rem]"
+                    value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
                     {categories?.map((c) => (
@@ -171,7 +220,7 @@ const ProductUpdate = () => {
                   Update
                 </button>
                 <button
-                  onClick={handleDelete}
+                  // onClick={handleDelete}
                   className="py-4 px-10 mt-5 rounded-lg text-lg font-bold  bg-pink-600"
                 >
                   Delete

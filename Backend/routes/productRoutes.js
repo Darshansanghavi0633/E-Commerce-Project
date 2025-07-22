@@ -28,7 +28,7 @@ router.route('/new').get(fetchNewProducts);
 
 router.route('/:id')
 .get(fetchProductById)
-.put(authenticateUser,authorizeAdmin,checkId,formidable(),updateProductDetails)
+.put(authenticateUser,authorizeAdmin,formidable(),updateProductDetails)
 .delete(authenticateUser,authorizeAdmin,checkId,removeProduct);
 
 
