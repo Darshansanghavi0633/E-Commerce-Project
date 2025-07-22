@@ -8,7 +8,7 @@ import {
 } from '../../redux/api/productApiSlice';
 
 import { useFetchCategoriesQuery } from '../../redux/api/categoryApiSlice';
-
+import AdminMenu from './AdminMenu';
 import { toast } from 'react-toastify';
 
 const ProductUpdate = () => {
@@ -54,7 +54,7 @@ const ProductUpdate = () => {
     <>
       <div className="container  xl:mx-[9rem] sm:mx-[0]">
         <div className="flex flex-col md:flex-row">
-          {/* <AdminMenu /> */}
+          <AdminMenu />
           <div className="md:w-3/4 p-3">
             <div className="h-12">Update / Delete Product</div>
 

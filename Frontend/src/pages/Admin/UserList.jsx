@@ -5,6 +5,7 @@ import Loader from '../../components/Loader';
 import { toast } from 'react-toastify';
 import { useGetUsersQuery, useDeleteUserMutation, useUpdateUserMutation } from '../../redux/api/userApiSlice';
 import Message from '../../components/Message';
+import AdminMenu from './AdminMenu';
 
 
 const UserList = () => {
@@ -64,7 +65,7 @@ const UserList = () => {
         </Message>
       ) : (
         <div className="flex flex-col md:flex-row">
-          {/* <AdminMenu /> */}
+          <AdminMenu />
           <table className="w-full md:w-4/5 mx-auto">
             <thead>
               <tr>
