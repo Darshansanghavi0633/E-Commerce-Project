@@ -12,6 +12,7 @@ import FavoriteCount from '../Products/FavoriteCount.jsx';
 const Navigation = () => {
     // Redux
     const {userInfo}= useSelector(state=>state.auth);
+    const {cartItems} = useSelector(state => state.cart);
     const dispatch = useDispatch();
     const [logoutApiCall] = useLogoutMutation();
     // State
@@ -60,9 +61,18 @@ const Navigation = () => {
           <span className=" hidden nav-item-name mt-[3rem]">SHOP</span>
         </Link>
 
-        <Link to="/cart" className="flex items-center transition-transform transform hover:translate-x-4">
+        <Link to="/cart" className="relative flex items-center transition-transform transform hover:translate-x-4">
           <AiOutlineShoppingCart  className='mr-2 mt-[3rem]' size={26}/>
           <span className=" hidden nav-item-name mt-[3rem]">CART</span>
+          <div className="absolute left-4 top-10">
+            {
+              cartItems.length > 0 && (
+                <span className="bg-red-500 text-white rounded-full px-2 py-1 text-xs">
+                  {cartItems.reduce((acc, item) => acc + item.qty, 0)}
+                </span>
+              )
+            }
+          </div>
         </Link>
 
         <Link to="/favorite" className="flex relative">

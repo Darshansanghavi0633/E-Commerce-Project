@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 import { Link, useNavigate,useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useGetProductDetailsQuery,useCreateReviewMutation } from '../../redux/api/productApiSlice.js';
 import Loader from '../../components/Loader.jsx';
@@ -11,11 +11,13 @@ import moment from 'moment';
 import HeartIcon from './HeartIcon';
 import Ratings from './Ratings.jsx';
 import ProductTabs from './ProductTabs.jsx';
+import { addToCart } from '../../redux/features/Cart/cartSlice.js';
 
 const ProductDetails = () => {
     // Navigation and parameters
     const {id: productId} = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     //Local State
     const [qty, setQty] = useState(1);
@@ -143,9 +145,9 @@ const ProductDetails = () => {
 
               <div className="btn-container">
                 <button
-                //   onClick={addToCartHandler}
+                  onClick={addToCartHandler}
                   disabled={product.countInStock === 0}
-                  className="bg-pink-600  py-2 px-4 rounded-lg mt-4 md:mt-0"
+                  className="bg-pink-600 text-white py-2 px-4 rounded-lg mt-4 md:mt-0"
                 >
                   Add To Cart
                 </button>
