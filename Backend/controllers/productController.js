@@ -168,3 +168,22 @@ export const fetchNewProducts = asyncHandler(async(req,res)=>{
         res.status(400).json({message: error.message}); // Responding with an error message if an exception occurs
     }
 })
+
+
+export const filterProducts = asyncHandler(async(req,res)=>{
+    try {
+        const {checked, radio} = req.body; // Extracting filter criteria from the request body
+        let args={};
+        if( checked.length > 0) {
+            args.category = checked; // Filtering products by categories
+        }
+        if( radio.length) {
+            args.price = {$gte:radio[0], $lte:radio[1]}; // Filtering products by brands
+        }
+        const products = await Product.find(args); // Fetching products based on the filter criteria
+        res.json(products); // Responding with the filtered products       
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({message: error.message}); // Responding with an error message if an exception occurs
+    }   
+})

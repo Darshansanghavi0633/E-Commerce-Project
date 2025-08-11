@@ -24,6 +24,7 @@ import AllProducts from './pages/Admin/AllProducts.jsx';
 
 //Pages
 import Home from './pages/Home.jsx';
+import Shop from './pages/Shop.jsx';
 import Favorites from './pages/Products/Favorites.jsx';
 import ProductDetails from './pages/Products/ProductDetails.jsx';
 import Cart from './pages/Cart.jsx'; // Importing Cart component
@@ -38,7 +39,8 @@ const router = createBrowserRouter(
       <Route index={true} path='/' element={<Home />} />  
       <Route path='/favorite' element={<Favorites />} /> 
       <Route path='/product/:id' element={<ProductDetails />} /> 
-      <Route path='/cart' element={<Cart />} />                           
+      <Route path='/cart' element={<Cart />} />  
+      <Route path='/shop' element={<Shop />} />                         
 
       <Route path='' element={<PrivateRoute />}>                     //private route 
         <Route path='/profile' element={<Profile/>}/>                //child route of private route          
