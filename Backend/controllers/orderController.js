@@ -26,6 +26,8 @@ function calcPrices(orderItems) {
   };
 }
 
+
+// Create Order Controller Functions
 const createOrder = async (req, res) => {
   try {
     const { orderItems, shippingAddress, paymentMethod } = req.body;
@@ -55,7 +57,7 @@ const createOrder = async (req, res) => {
         price: matchingItemFromDB.price,
         _id: undefined,
       };
-    });
+    })
 
     const { itemsPrice, taxPrice, shippingPrice, totalPrice } =
       calcPrices(dbOrderItems);
@@ -87,6 +89,7 @@ const getAllOrders = async (req, res) => {
   }
 };
 
+// Get User Orders
 const getUserOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id });
@@ -96,6 +99,8 @@ const getUserOrders = async (req, res) => {
   }
 };
 
+
+// Count Total Orders
 const countTotalOrders = async (req, res) => {
   try {
     const totalOrders = await Order.countDocuments();
@@ -105,6 +110,7 @@ const countTotalOrders = async (req, res) => {
   }
 };
 
+// Calculate Total Sales
 const calculateTotalSales = async (req, res) => {
   try {
     const orders = await Order.find();
@@ -115,6 +121,7 @@ const calculateTotalSales = async (req, res) => {
   }
 };
 
+// Calculate Total Sales by Date
 const calcualteTotalSalesByDate = async (req, res) => {
   try {
     const salesByDate = await Order.aggregate([
@@ -139,6 +146,7 @@ const calcualteTotalSalesByDate = async (req, res) => {
   }
 };
 
+// Find Order by ID
 const findOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).populate(
@@ -157,6 +165,7 @@ const findOrderById = async (req, res) => {
   }
 };
 
+// Mark Order as Paid
 const markOrderAsPaid = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -182,6 +191,7 @@ const markOrderAsPaid = async (req, res) => {
   }
 };
 
+// Mark Order as Delivered
 const markOrderAsDelivered = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
