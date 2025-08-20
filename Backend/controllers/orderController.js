@@ -64,7 +64,7 @@ const createOrder = async (req, res) => {
     });
     const createdOrder = await order.save();
 
-    res.status(201).json(createdOrder);
+    res.status(201).json(createdOrder); 
 
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -73,7 +73,7 @@ const createOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find({}).populate("user", "id username");
+    const orders = await Order.find({}).populate("user", "id username"); // populate  user ref with user data and id and username is selected field.
     res.json(orders);
   } catch (error) {
     res.status(500).json({ error: error.message });
