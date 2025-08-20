@@ -5,6 +5,7 @@ import {Route, RouterProvider, createRoutesFromElements} from 'react-router';
 import {createBrowserRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {store} from './redux/store.js';
+import {PayPalScriptProvider} from '@paypal/react-paypal-js';
 
 // Auth
 import Login from './pages/Auth/login.jsx';
@@ -13,6 +14,9 @@ import Register from './pages/Auth/Register.jsx';
 //Private Route
 import PrivateRoute from './components/PrivateRoute';
 import Profile from './pages/User/Profile.jsx';
+import Shipping from './pages/Orders/Shipping.jsx';
+import PlaceOrder from './pages/Orders/PlaceOrder.jsx';
+
 
 //Admin
 import AdminRoute from './pages/Admin/AdminRoute';
@@ -43,7 +47,9 @@ const router = createBrowserRouter(
       <Route path='/shop' element={<Shop />} />                         
 
       <Route path='' element={<PrivateRoute />}>                     //private route 
-        <Route path='/profile' element={<Profile/>}/>                //child route of private route          
+        <Route path='/profile' element={<Profile/>}/>                //child route of private route   
+        <Route path='/shipping' element={<Shipping />} />            //child route of private route       
+        <Route path='/placeorder' element={<PlaceOrder />} />            //child route of private route       
       </Route> 
 
       <Route path='/admin' element={<AdminRoute />}>                            //admin routes
@@ -58,4 +64,10 @@ const router = createBrowserRouter(
   )
 );
 
-ReactDom.createRoot(document.getElementById('root')).render(<Provider store={store}><RouterProvider router={router} /></Provider>);
+ReactDom.createRoot(document.getElementById('root')).render(
+<Provider store={store}>
+  <PayPalScriptProvider>
+    <RouterProvider router={router} />
+  </PayPalScriptProvider>
+</Provider>
+);
