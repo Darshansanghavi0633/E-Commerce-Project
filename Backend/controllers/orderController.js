@@ -3,20 +3,13 @@ import Product from "../models/productModel.js";
 
 // Utility Function
 function calcPrices(orderItems) {
-  const itemsPrice = orderItems.reduce(
-    (acc, item) => acc + item.price * item.qty,
-    0
-  );
+  const itemsPrice = orderItems.reduce((acc, item) => acc + item.price * item.qty,0 );
 
   const shippingPrice = itemsPrice > 100 ? 0 : 10;
   const taxRate = 0.15;
   const taxPrice = (itemsPrice * taxRate).toFixed(2);
 
-  const totalPrice = (
-    itemsPrice +
-    shippingPrice +
-    parseFloat(taxPrice)
-  ).toFixed(2);
+  const totalPrice = (itemsPrice + shippingPrice + parseFloat(taxPrice)).toFixed(2);
 
   return {
     itemsPrice: itemsPrice.toFixed(2),
@@ -30,51 +23,49 @@ function calcPrices(orderItems) {
 // Create Order Controller Functions
 const createOrder = async (req, res) => {
   try {
-    const { orderItems, shippingAddress, paymentMethod } = req.body;
+    const {orderItems, shippingAddress, paymentMethod} = req.body;
 
-    if (orderItems && orderItems.length === 0) {
+    if( orderItems && orderItems.length === 0) {
       res.status(400);
       throw new Error("No order items");
     }
 
     const itemsFromDB = await Product.find({
-      _id: { $in: orderItems.map((x) => x._id) },
+      _id: { $in: orderItems.map(item => item._id) }          // Fetch all Products in orderItems
     });
 
-    const dbOrderItems = orderItems.map((itemFromClient) => {
-      const matchingItemFromDB = itemsFromDB.find(
-        (itemFromDB) => itemFromDB._id.toString() === itemFromClient._id
-      );
 
-      if (!matchingItemFromDB) {
-        res.status(404);
-        throw new Error(`Product not found: ${itemFromClient._id}`);
+    const dbOrderItems = orderItems.map(orderItem => {
+       // Check if product exists in DB
+      const matchingItemFromDB = itemsFromDB.find(itemFromDB => itemFromDB._id.toString() === orderItem._id.toString());
+      // If product does not exist, throw an error else return that product object{}
+      if(!matchingItemFromDB) {
+        res.status(400);
+        throw new Error(`Product with ID ${orderItem._id} not found`);
       }
-
       return {
-        ...itemFromClient,
-        product: itemFromClient._id,
-        price: matchingItemFromDB.price,
-        _id: undefined,
+        ...orderItem,
+        product: orderItem._id,
+        price: matchingItemFromDB.price, // Use price from DB
+        _id: undefined, // Remove _id to avoid conflicts
       };
-    })
-
-    const { itemsPrice, taxPrice, shippingPrice, totalPrice } =
-      calcPrices(dbOrderItems);
-
+    });
+    
+    const {itemsPrice,shippingPrice,taxPrice,totalPrice} = calcPrices(dbOrderItems);
     const order = new Order({
-      orderItems: dbOrderItems,
-      user: req.user._id,
+      orderItems: dbOrderItems,               //Order Items                 
+      user: req.user._id,                     //User Provided Details
       shippingAddress,
       paymentMethod,
-      itemsPrice,
-      taxPrice,
+      itemsPrice,                             //Price Details
       shippingPrice,
+      taxPrice,
       totalPrice,
     });
-
     const createdOrder = await order.save();
+
     res.status(201).json(createdOrder);
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
